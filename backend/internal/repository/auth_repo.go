@@ -5,6 +5,7 @@ import (
 	"linksort/internal/dto"
 	"linksort/internal/models"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -16,17 +17,16 @@ func NewAuthRepository(db *pgxpool.Pool) *AuthRepository {
 	return &AuthRepository{db: db}
 }
 
-func (r *AuthRepository) FindEmail(email string) (*dto.Users, error) {
-	row := r.db.QueryRow(context.Background(), `
-		SELECT id, email, password created_at FROM users WHERE email = $1;
-	`, email)
-
-	var user dto.Users
-	err := row.Scan(&user.Id, &user.Email, &user.Password, &user.Createdat)
+func (f *AuthRepository) FindEmail(email string) (*dto.Users, error) {
+	query := `SELECT id, email, password, created_at FROM users WHERE email = $1`
+	rows, err := f.db.Query(context.Background(), query, email)
 	if err != nil {
 		return nil, err
 	}
-
+	user, err := pgx.CollectOneRow(rows, pgx.RowToStructByName[dto.Users])
+	if err != nil {
+		return nil, err
+	}
 	return &user, nil
 }
 
