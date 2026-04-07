@@ -10,7 +10,8 @@ import {
     HiArrowRight, HiEye, HiEyeOff,
 } from "react-icons/hi";
 import { FcGoogle } from "react-icons/fc";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { useLoginMutation } from "../feature/api";
 
 const loginSchema = yup.object({
     email: yup
@@ -21,17 +22,29 @@ const loginSchema = yup.object({
 });
 
 export default function Login() {
+    const [loginUser, { isLoading }] = useLoginMutation();
+    const [error, setError] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate()
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-    } = useForm({ resolver: yupResolver(loginSchema) });
+    const { register, handleSubmit, formState: { errors }, } = useForm({ resolver: yupResolver(loginSchema) });
 
     const onSubmit = async (data) => {
-        await new Promise((r) => setTimeout(r, 1000));
-        console.log("test");
+        try {
+            const res = await loginUser({
+                email: data.email,
+                password: data.password,
+            }).unwrap();
+            const token = res.data || res.Results;
+
+            localStorage.setItem("token", token);
+            setTimeout(() => {
+                navigate("/", { replace: true });
+            }, 1000);
+        } catch (err) {
+            console.error(err);
+            setError(err?.data?.message || "Email or Password Wrong");
+        }
     };
 
     return (
@@ -50,6 +63,11 @@ export default function Login() {
                 <div className="w-full max-w-sm rounded-2xl bg-white shadow-xl shadow-blue-100/50 p-8">
                     <h1 className="text-2xl font-bold text-gray-900 mb-1">Welcome Back</h1>
                     <p className="text-sm text-gray-500 mb-7">Please enter your details to sign in.</p>
+                    <div className="my-5">
+                        {error ?
+                            <h1 className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-md" > Email or Password Wrong </h1>
+                            : <></>}
+                    </div>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
                         <InputField label="Email Address" id="email" type="email" placeholder="name@company.com" register={register("email")} error={errors.email?.message} />
@@ -76,14 +94,8 @@ export default function Login() {
                             )}
                         </div>
 
-                        <button type="submit" disabled={isSubmitting} className="mt-1 flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-not-allowed" >
-                            {isSubmitting ? (
-                                <span className="inline-block h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                            ) : (
-                                <>
-                                    Log In <HiArrowRight size={16} />
-                                </>
-                            )}
+                        <button type="submit" disabled={isLoading} className="mt-1 flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-not-allowed" >
+                            {isLoading ? "Loading..." : "Submit"}
                         </button>
                     </form>
 
