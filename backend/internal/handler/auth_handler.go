@@ -2,10 +2,12 @@ package handler
 
 import (
 	"linksort/internal/helper"
+	"linksort/internal/middleware"
 	"linksort/internal/models"
 	"linksort/internal/service"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,6 +20,12 @@ func NewAuthHandler(repo *service.AuthService) *AuthHandler {
 	return &AuthHandler{
 		AuthService: repo,
 	}
+}
+
+type ResponseUser struct {
+	Id         int       `json:"id"`
+	Email      string    `json:"email"`
+	Created_at time.Time `json:"created_at"`
 }
 
 func (h *AuthHandler) Register(ctx *gin.Context) {
@@ -57,6 +65,17 @@ func (h *AuthHandler) Login(ctx *gin.Context) {
 		return
 	}
 
-	helper.ResponseOk(ctx, http.StatusOK, "Success Login ", user)
+	token, err := middleware.GenerateToken(user.Id, user.Email, user.Createdat)
+
+	result := gin.H{
+		"token": token,
+		"user": ResponseUser{
+			Id:         user.Id,
+			Email:      user.Email,
+			Created_at: user.Createdat,
+		},
+	}
+
+	helper.ResponseOk(ctx, http.StatusOK, "Success Login ", result)
 
 }
