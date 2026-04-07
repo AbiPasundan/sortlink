@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import * as yup from "yup";
 import { HiArrowRight, HiEye, HiEyeOff, HiLink, } from "react-icons/hi";
 
@@ -9,6 +9,7 @@ import Footer from "#/components/Footer.jsx"
 import InputField from "#/components/auth/InputField.jsx";
 import LayoutAuth from "#/components/auth/LayoutAuth.jsx";
 import Logo from "#/assets/img/logo.png";
+import { useRegisterMutation } from "#/feature/api";
 
 const signupSchema = yup.object({
     email: yup
@@ -27,8 +28,11 @@ const signupSchema = yup.object({
 
 
 export default function Register() {
+    const [registerUser, { isLoading }] = useRegisterMutation();
+    const [registerError, setRegisterError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
+    const navigate = useNavigate()
 
     const {
         register,
@@ -36,9 +40,24 @@ export default function Register() {
         formState: { errors, isSubmitting },
     } = useForm({ resolver: yupResolver(signupSchema) });
 
-    const onSubmit = async (data) => {
-        await new Promise((r) => setTimeout(r, 1000));
-        alert(`Account created for ${data.email}`);
+    const onSubmit = async data => {
+        try {
+            await registerUser({
+                email: data.email,
+                password: data.password,
+            }).unwrap();
+
+            setTimeout(() => {
+                navigate("/login", { replace: true });
+            }, 1000);
+
+        } catch (err) {
+            console.error(err);
+
+            setRegisterError(
+                err?.data?.message || "Failed to register"
+            );
+        }
     };
 
     return (
@@ -51,6 +70,11 @@ export default function Register() {
 
             <div className="flex flex-1 flex-col items-center justify-center px-4 py-12">
                 <img src={Logo} alt="logo" loading="lazy" />
+                <div className="">
+                    {registerError ?
+                        <p className="my-10 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-md"> {registerError} </p>
+                        : <></>}
+                </div>
 
                 <h1 className="text-2xl font-bold text-gray-900 mb-1">Create Account</h1>
                 <p className="text-sm text-gray-500 mb-8">Join the elite architects of the web.</p>
@@ -96,14 +120,9 @@ export default function Register() {
                             )}
                         </div>
 
-                        <button type="submit" disabled={isSubmitting} className="mt-1 flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-not-allowed" >
-                            {isSubmitting ? (
-                                <span className="inline-block h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
-                            ) : (
-                                <>
-                                    Sign Up <HiArrowRight size={16} />
-                                </>
-                            )}
+                        <button type="submit" disabled={isLoading} className="mt-1 flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-not-allowed" >
+                            {/* {isLoading ? "Loading..." : "Register"} */}
+                            Register
                         </button>
                     </form>
 
