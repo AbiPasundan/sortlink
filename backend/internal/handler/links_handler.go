@@ -23,8 +23,6 @@ func NewLinksHandler(service *service.LinksService) *LinksHandler {
 
 func (h *LinksHandler) GetLinkHandler(ctx *gin.Context) {
 	id, exists := ctx.Get("id")
-	fmt.Println("teuing naon ieulah", exists)
-	fmt.Println("id from header ", id)
 
 	if !exists {
 		helper.ResponseErr(ctx, http.StatusUnauthorized, "Unauthorized", exists, nil)
