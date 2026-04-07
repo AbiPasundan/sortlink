@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"linksort/internal/di"
+	"linksort/internal/middleware"
 	"linksort/internal/routes"
 	"os"
 
@@ -15,6 +16,7 @@ import (
 func main() {
 	godotenv.Load()
 	r := gin.Default()
+	r.Use(middleware.CORSMiddleware())
 
 	userContainer := di.BuildContainer()
 	defer userContainer.Pool.Close()
