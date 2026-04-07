@@ -1,6 +1,6 @@
 import Footer from "#/components/Footer.jsx"
 import InputField from "#/components/auth/InputField.jsx";
-import LayoutAuth from "#/components/auth/LayoutAuth.jsx";
+import AuthLayout from "#/components/auth/LayoutAuth.jsx";
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -10,6 +10,7 @@ import {
     HiArrowRight, HiEye, HiEyeOff,
 } from "react-icons/hi";
 import { FcGoogle } from "react-icons/fc";
+import { Link } from "react-router";
 
 const loginSchema = yup.object({
     email: yup
@@ -34,7 +35,7 @@ export default function Login() {
     };
 
     return (
-        <LayoutAuth>
+        <AuthLayout>
 
             <div className="pointer-events-none fixed inset-0 overflow-hidden">
                 <div className="absolute -top-20 -left-20 h-96 w-96 rounded-full bg-blue-100 opacity-60 blur-3xl" />
@@ -102,13 +103,13 @@ export default function Login() {
 
                 <p className="mt-6 text-sm text-gray-500">
                     <span>Don&apos;t have an account? </span>
-                    <button className="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+                    <Link to="/register" className="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
                         Sign up
-                    </button>
+                    </Link>
                 </p>
             </div>
 
             <Footer />
-        </LayoutAuth>
+        </AuthLayout>
     );
 }
