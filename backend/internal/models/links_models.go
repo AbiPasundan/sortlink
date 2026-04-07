@@ -14,4 +14,5 @@ type GetLinks struct {
 	OriginalURL string    `json:"original_url" db:"original_url" binding:"required,url"`
 	Slug        string    `json:"slug" db:"slug"`
 	CreatedAt   time.Time `json:"created_at" db:"created_at"`
+	DeleteddAt  time.Time `json:"deleted_at" db:"deleted_at"`
 }

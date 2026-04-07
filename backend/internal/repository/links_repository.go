@@ -17,7 +17,7 @@ func NewLinksRepository(db *pgxpool.Pool) *LinksRepository {
 }
 
 func (p *LinksRepository) CreateLink(link models.CreateLinks) error {
-	query := `INSERT INTO links (user_id, original_url, slug, created_at) VALUES ($1, $2, $3, NOW())`
+	query := `INSERT INTO links (user_id, original_url, slug, created_at, deleted_at) VALUES ($1, $2, $3, NOW(), NULL);`
 	_, err := p.db.Exec(context.Background(), query, link.UserID, link.OriginalURL, link.Slug)
 	if err != nil {
 		return err
