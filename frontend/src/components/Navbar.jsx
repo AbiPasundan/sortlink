@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 
 export default function Navbar() {
+    const token = localStorage.getItem("token") || null;
     return (
         <nav className="bg-white border-b border-slate-100 sticky top-0 z-50">
             <div className="mx-auto px-10 h-14 flex items-center justify-between">
@@ -13,8 +14,25 @@ export default function Navbar() {
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <Link to="/login" className="text-sm font-medium text-slate-600 hover:text-slate-900 px-3 py-1.5 transition-colors">Login</Link>
-                    <Link to="/register" className="text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-md transition-colors">Register</Link>
+                    {token ? (
+                        <>
+                            <Link to="/dashboard" className="text-sm font-medium text-slate-600 hover:text-slate-900 px-3 py-1.5 transition-colors">
+                                Dashboard
+                            </Link>
+                            <Link to="/logout" className="text-sm font-semibold bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-md transition-colors">
+                                Logout
+                            </Link>
+                        </>
+                    ) : (
+                        <>
+                            <Link to="/login" className="text-sm font-medium text-slate-600 hover:text-slate-900 px-3 py-1.5 transition-colors">
+                                Login
+                            </Link>
+                            <Link to="/register" className="text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-md transition-colors">
+                                Register
+                            </Link>
+                        </>
+                    )}
                 </div>
             </div>
         </nav>
