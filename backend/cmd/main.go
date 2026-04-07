@@ -20,6 +20,7 @@ func main() {
 	defer userContainer.Pool.Close()
 
 	routes.AuthRoutes(r, userContainer.AuthHandler)
+	routes.LinksRoutes(r, userContainer.LinksHandler)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.Run(fmt.Sprintf(":%s", os.Getenv("PORT")))

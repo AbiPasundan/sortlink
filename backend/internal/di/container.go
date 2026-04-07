@@ -13,8 +13,9 @@ import (
 )
 
 type Container struct {
-	Pool        *pgxpool.Pool
-	AuthHandler *handler.AuthHandler
+	Pool         *pgxpool.Pool
+	AuthHandler  *handler.AuthHandler
+	LinksHandler *handler.LinksHandler
 }
 
 func BuildContainer() *Container {
@@ -47,8 +48,13 @@ func BuildContainer() *Container {
 	authService := service.NewAuthService(authRepo)
 	authHandler := handler.NewAuthHandler(authService)
 
+	linksRepo := repository.NewLinksRepository(pool)
+	linkService := service.NewLinksService(linksRepo)
+	linkHandler := handler.NewLinksHandler(linkService)
+
 	return &Container{
-		AuthHandler: authHandler,
+		AuthHandler:  authHandler,
+		LinksHandler: linkHandler,
 	}
 
 }
