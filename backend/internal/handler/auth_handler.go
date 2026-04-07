@@ -41,3 +41,22 @@ func (h *AuthHandler) Register(ctx *gin.Context) {
 
 	helper.ResponseOk(ctx, http.StatusOK, "Success register", nil)
 }
+
+func (h *AuthHandler) Login(ctx *gin.Context) {
+	var req models.Register
+
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		helper.ResponseErr(ctx, http.StatusBadRequest, "Invalid request ", nil, err)
+		return
+	}
+
+	user, err := h.AuthService.Login(req.Email, req.Password)
+
+	if err != nil {
+		helper.ResponseErr(ctx, http.StatusBadRequest, "Wrong Email or Password ", nil, err)
+		return
+	}
+
+	helper.ResponseOk(ctx, http.StatusOK, "Success Login ", user)
+
+}
