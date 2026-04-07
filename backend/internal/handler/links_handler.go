@@ -6,6 +6,7 @@ import (
 	"linksort/internal/models"
 	"linksort/internal/service"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -53,4 +54,26 @@ func (h *LinksHandler) CreateLink(ctx *gin.Context) {
 	}
 
 	helper.ResponseOk(ctx, http.StatusOK, "Success Create Link ", nil)
+}
+
+func (h *LinksHandler) DeleteLink(ctx *gin.Context) {
+
+	idParamsRaw := ctx.Param("id")
+	idParams, err := strconv.Atoi(idParamsRaw)
+	if helper.ResponseErr(ctx, http.StatusBadRequest, "Invalid ID format: ", nil, err) {
+		return
+	}
+	fmt.Println("link id", idParams)
+
+	userIdRaw, exists := ctx.Get("id")
+	userId := userIdRaw.(int)
+	if !exists {
+		helper.ResponseErr(ctx, http.StatusUnauthorized, "Unauthorized", exists, nil)
+		return
+	}
+
+	h.LinkService.DeleteLinkService(userId, idParams)
+	helper.ResponseErr(ctx, http.StatusNotFound, "id not found", nil, err)
+
+	helper.ResponseOk(ctx, http.StatusOK, fmt.Sprintf("Success delete category with id: %d", idParams), nil)
 }

@@ -12,4 +12,5 @@ func LinksRoutes(r *gin.Engine, h *handler.LinksHandler) {
 	admin.Use(middleware.JWTMiddleware())
 	admin.POST("/links", h.CreateLink)
 	admin.GET("/links", h.GetLinkHandler)
+	admin.PATCH("/links/:id", h.DeleteLink)
 }
