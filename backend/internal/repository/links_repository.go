@@ -41,3 +41,13 @@ func (p *LinksRepository) GetLinks(id int) ([]models.GetLinks, error) {
 
 	return products, nil
 }
+
+func (p *LinksRepository) DeleteLink(userId int, id int) error {
+	query := `UPDATE links SET deleted_at = NOW() WHERE links.user_id = $1 AND links.id = $2;`
+	_, err := p.db.Exec(context.Background(), query, userId, id)
+	if err != nil {
+		return err
+	}
+
+	return err
+}

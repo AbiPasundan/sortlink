@@ -22,3 +22,7 @@ func (s *LinksService) CreateLinkService(link models.CreateLinks) error {
 func (s *LinksService) GetLinkService(id int) ([]models.GetLinks, error) {
 	return s.LinkRepo.GetLinks(id)
 }
+
+func (s *LinksService) DeleteLinkService(userId int, id int) error {
+	return s.LinkRepo.DeleteLink(userId, id)
+}
