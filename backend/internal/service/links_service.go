@@ -18,3 +18,7 @@ func NewLinksService(repo *repository.LinksRepository) *LinksService {
 func (s *LinksService) CreateLinkService(link models.CreateLinks) error {
 	return s.LinkRepo.CreateLink(link)
 }
+
+func (s *LinksService) GetLinkService(id int) ([]models.GetLinks, error) {
+	return s.LinkRepo.GetLinks(id)
+}

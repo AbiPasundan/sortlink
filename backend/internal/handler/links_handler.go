@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"linksort/internal/helper"
 	"linksort/internal/models"
 	"linksort/internal/service"
@@ -17,6 +18,25 @@ func NewLinksHandler(service *service.LinksService) *LinksHandler {
 	return &LinksHandler{
 		LinkService: service,
 	}
+}
+
+func (h *LinksHandler) GetLinkHandler(ctx *gin.Context) {
+	id, exists := ctx.Get("id")
+	fmt.Println("teuing naon ieulah", exists)
+	fmt.Println("id from header ", id)
+
+	if !exists {
+		helper.ResponseErr(ctx, http.StatusUnauthorized, "Unauthorized", exists, nil)
+		return
+	}
+
+	links, err := h.LinkService.GetLinkService(id.(int))
+
+	if err != nil {
+		helper.ResponseErr(ctx, http.StatusInternalServerError, "Failed to get links ", err.Error(), err)
+		return
+	}
+	helper.ResponseOk(ctx, http.StatusOK, "Success get All Links ", links)
 }
 
 func (h *LinksHandler) CreateLink(ctx *gin.Context) {
