@@ -7,6 +7,7 @@ import Login from '#/pages/Login.jsx'
 import Register from '#/pages/Register.jsx'
 import { store } from '#/app/store.js'
 import { Provider } from 'react-redux';
+import Dashboard from '#/pages/Dashboard';
 
 let router = createBrowserRouter([
   {
@@ -20,7 +21,11 @@ let router = createBrowserRouter([
   {
     path: "/register",
     Component: Register,
-  }
+  },
+  {
+    path: "/dashboard",
+    Component: Dashboard,
+  },
 ]);
 
 createRoot(document.getElementById('root')).render(
