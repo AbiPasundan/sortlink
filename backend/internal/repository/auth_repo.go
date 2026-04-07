@@ -32,9 +32,9 @@ func (r *AuthRepository) FindEmail(email string) (*dto.Users, error) {
 
 func (u *AuthRepository) Register(user *models.Register) error {
 	_, err := u.db.Exec(context.Background(), `
-		INSERT INTO users (email, password )
-		VALUES ($1, $2 )
-	`, user.Email, user.Password, 2)
+		INSERT INTO users (email, password, created_at )
+		VALUES ($1, $2, NOW())
+	`, user.Email, user.Password)
 
 	return err
 }
