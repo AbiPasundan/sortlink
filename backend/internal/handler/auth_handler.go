@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"linksort/internal/helper"
 	"linksort/internal/models"
 	"linksort/internal/service"
 	"net/http"
@@ -24,35 +25,19 @@ func (h *AuthHandler) Register(ctx *gin.Context) {
 	var req models.Register
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"success": true,
-			"message": "Invalid request body",
-			"results": nil,
-		})
+		helper.ResponseErr(ctx, http.StatusBadRequest, "Invalid request body ", nil, err)
 		return
 	}
 
 	err := h.AuthService.Register(&req)
 	if err != nil {
 		if strings.Contains(err.Error(), "duplicate key") {
-			ctx.JSON(http.StatusBadRequest, gin.H{
-				"success": true,
-				"message": "Email already exists",
-				"results": nil,
-			})
+			helper.ResponseErr(ctx, http.StatusBadRequest, "Email already exists ", nil, err)
 			return
 		}
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"success": true,
-			"message": "Failed register" + err.Error(),
-			"results": nil,
-		})
+		helper.ResponseErr(ctx, http.StatusInternalServerError, "Failed register ", nil, err)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"message": "Success Create User",
-		"results": nil,
-	})
+	helper.ResponseOk(ctx, http.StatusOK, "Success register", nil)
 }
