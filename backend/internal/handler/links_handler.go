@@ -39,19 +39,21 @@ func (h *LinksHandler) GetLinkHandler(ctx *gin.Context) {
 }
 
 func (h *LinksHandler) CreateLink(ctx *gin.Context) {
-	var newProducts models.CreateLinks
+	var newLink models.CreateLinks
 
-	if err := ctx.ShouldBindJSON(&newProducts); err != nil {
-		helper.ResponseErr(ctx, http.StatusBadRequest, "Invalid request body ", nil, err)
+	if err := ctx.ShouldBindJSON(&newLink); err != nil {
+		errMessage := helper.FormatValidationError(err)
+		helper.ResponseErr(ctx, http.StatusBadRequest, "Validation failed ", errMessage, err)
 		return
 	}
-	err := h.LinkService.CreateLinkService(newProducts)
+
+	err := h.LinkService.CreateLinkService(newLink)
 	if err != nil {
-		helper.ResponseErr(ctx, http.StatusInternalServerError, "Internal Server Error ", nil, err)
+		helper.ResponseErr(ctx, http.StatusInternalServerError, "Gagal membuat link", nil, err)
 		return
 	}
 
-	helper.ResponseOk(ctx, http.StatusOK, "Success Create Link ", nil)
+	helper.ResponseOk(ctx, http.StatusOK, "Berhasil membuat link", nil)
 }
 
 func (h *LinksHandler) DeleteLink(ctx *gin.Context) {
