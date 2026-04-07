@@ -4,6 +4,7 @@ import (
 	"context"
 	"linksort/internal/models"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -23,4 +24,20 @@ func (p *LinksRepository) CreateLink(link models.CreateLinks) error {
 	}
 
 	return err
+}
+
+func (p *LinksRepository) GetLinks(id int) ([]models.GetLinks, error) {
+
+	rows, err := p.db.Query(context.Background(), `
+		SELECT u.id, l.original_url, l.slug, l.created_at FROM users u LEFT JOIN links l ON u.id = l.user_id WHERE u.id = $1;
+	`, id)
+
+	products, err := pgx.CollectRows(rows, pgx.RowToStructByName[models.GetLinks])
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	return products, nil
 }
