@@ -2,6 +2,9 @@ package di
 
 import (
 	"context"
+	"linksort/internal/handler"
+	"linksort/internal/repository"
+	"linksort/internal/service"
 	"log"
 	"os"
 
@@ -10,7 +13,8 @@ import (
 )
 
 type Container struct {
-	Pool *pgxpool.Pool
+	Pool        *pgxpool.Pool
+	AuthHandler *handler.AuthHandler
 }
 
 func BuildContainer() *Container {
@@ -39,6 +43,12 @@ func BuildContainer() *Container {
 	}
 	log.Println("Berhasil terhubung menggunakan connection pool!")
 
-	return nil
+	authRepo := repository.NewAuthRepository(pool)
+	authService := service.NewAuthService(authRepo)
+	authHandler := handler.NewAuthHandler(authService)
+
+	return &Container{
+		AuthHandler: authHandler,
+	}
 
 }

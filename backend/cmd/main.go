@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"linksort/internal/di"
+	"linksort/internal/routes"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -14,8 +15,11 @@ import (
 func main() {
 	godotenv.Load()
 	r := gin.Default()
-	fmt.Println("test connection")
-	fmt.Println(di.BuildContainer())
+
+	userContainer := di.BuildContainer()
+	defer userContainer.Pool.Close()
+
+	routes.AuthRoutes(r, userContainer.AuthHandler)
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.Run(fmt.Sprintf(":%s", os.Getenv("PORT")))
