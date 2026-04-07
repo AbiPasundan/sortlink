@@ -37,7 +37,7 @@ func (h *AuthHandler) Register(ctx *gin.Context) {
 		return
 	}
 
-	err := h.AuthService.Register(&req)
+	err := h.AuthService.Register(ctx, &req)
 	if err != nil {
 		if strings.Contains(err.Error(), "duplicate key") {
 			helper.ResponseErr(ctx, http.StatusBadRequest, "Email already exists ", nil, err)

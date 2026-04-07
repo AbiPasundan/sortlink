@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"fmt"
 	"linksort/internal/dto"
 	"linksort/internal/models"
@@ -19,7 +20,7 @@ func NewAuthService(repo *repository.AuthRepository) *AuthService {
 	}
 }
 
-func (s *AuthService) Register(user *models.Register) error {
+func (s *AuthService) Register(ctx context.Context, user *models.Register) error {
 	argon := argon2.DefaultConfig()
 
 	encoded, err := argon.HashEncoded([]byte(user.Password))
@@ -30,7 +31,7 @@ func (s *AuthService) Register(user *models.Register) error {
 
 	user.Password = string(encoded)
 
-	return s.AuthRepo.Register(user)
+	return s.AuthRepo.Register(ctx, user)
 }
 
 func (s *AuthService) Login(email, password string) (*dto.Users, error) {

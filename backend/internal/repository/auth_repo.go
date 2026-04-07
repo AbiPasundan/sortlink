@@ -30,11 +30,32 @@ func (f *AuthRepository) FindEmail(email string) (*dto.Users, error) {
 	return &user, nil
 }
 
-func (u *AuthRepository) Register(user *models.Register) error {
-	_, err := u.db.Exec(context.Background(), `
-		INSERT INTO users (email, password, created_at )
-		VALUES ($1, $2, NOW())
-	`, user.Email, user.Password)
+func (r *AuthRepository) Register(ctx context.Context, user *models.Register) error {
+	tx, err := r.db.Begin(ctx)
+	if err != nil {
+		return err
+	}
 
-	return err
+	defer tx.Rollback(ctx)
+
+	var userID int
+	queryRegister := `INSERT INTO users (email, password, created_at)  VALUES ($1, $2, NOW())  RETURNING id`
+
+	err = tx.QueryRow(ctx, queryRegister, user.Email, user.Password).Scan(&userID)
+	if err != nil {
+		return err
+	}
+
+	queryInsertLink := ` INSERT INTO links (user_id, original_url, slug, created_at, deleted_at)  VALUES ($1, 'https://www.google.com', substring(md5(random()::text) from 1 for 8), NOW(), NULL)`
+
+	_, err = tx.Exec(ctx, queryInsertLink, userID)
+	if err != nil {
+		return err
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return err
+	}
+
+	return nil
 }
