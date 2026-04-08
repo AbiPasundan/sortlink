@@ -8,6 +8,7 @@ import Register from '#/pages/Register.jsx'
 import { store } from '#/app/store.js'
 import { Provider } from 'react-redux';
 import Dashboard from '#/pages/Dashboard';
+import NotFound from '#/pages/NotFound';
 
 let router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ let router = createBrowserRouter([
   {
     path: "/dashboard",
     Component: Dashboard,
+  },
+  {
+    path: "*",
+    Component: NotFound,
   },
 ]);
 
