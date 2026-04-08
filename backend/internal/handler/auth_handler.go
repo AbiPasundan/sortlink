@@ -61,6 +61,16 @@ func (h *AuthHandler) Register(ctx *gin.Context) {
 	helper.ResponseOk(ctx, http.StatusOK, "Success register", nil)
 }
 
+// Login godoc
+// @Summary Login user
+// @Description Login to get a JWT token
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param request body models.Register true "Login request body"
+// @Success 200 {object} map[string]interface{} "Success Login"
+// @Failure 400 {object} map[string]interface{} "Invalid request or Wrong Email/Password"
+// @Router /api/login [post]
 func (h *AuthHandler) Login(ctx *gin.Context) {
 	var req models.Register
 
