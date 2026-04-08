@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 import Dashboard from '#/pages/Dashboard';
 import NotFound from '#/pages/NotFound';
 import SortLink from '#/pages/SortLink';
+import Profile from '#/pages/Profile';
 
 let router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ let router = createBrowserRouter([
   {
     path: "/createlink",
     Component: SortLink,
+  },
+  {
+    path: "/profile",
+    Component: Profile,
   },
   {
     path: "*",
