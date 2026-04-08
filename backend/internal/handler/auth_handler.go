@@ -28,6 +28,17 @@ type ResponseUser struct {
 	Created_at time.Time `json:"created_at"`
 }
 
+// Register godoc
+// @Summary Register a new user
+// @Description Register a new user with email and password
+// @Tags Auth
+// @Accept json
+// @Produce json
+// @Param request body models.Register true "Register request body"
+// @Success 200 {object} map[string]interface{} "Success register"
+// @Failure 400 {object} map[string]interface{} "Invalid request or Email already exists"
+// @Failure 500 {object} map[string]interface{} "Failed register"
+// @Router /api/register [post]
 func (h *AuthHandler) Register(ctx *gin.Context) {
 
 	var req models.Register
