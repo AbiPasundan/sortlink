@@ -1,0 +1,214 @@
+definitions:
+  dto.Links:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: integer
+      original_url:
+        type: string
+      slug:
+        type: string
+      user_id:
+        type: integer
+    required:
+    - original_url
+    type: object
+  models.CreateLinks:
+    properties:
+      created_at:
+        type: string
+      original_url:
+        type: string
+      slug:
+        type: string
+      user_id:
+        type: integer
+    required:
+    - original_url
+    type: object
+  models.Register:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - email
+    - password
+    type: object
+info:
+  contact: {}
+  description: API for managing short links
+  title: Short Link API
+  version: "1.0"
+paths:
+  /api/links:
+    get:
+      description: Get all short links for the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Links fetched successfully
+          schema:
+            items:
+              $ref: '#/definitions/dto.Links'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all short links
+      tags:
+      - Links
+    post:
+      consumes:
+      - application/json
+      description: Create a new short link for the authenticated user
+      parameters:
+      - description: Create link request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateLinks'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Link created successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Validation failed
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new short link
+      tags:
+      - Links
+  /api/links/{id}:
+    patch:
+      description: Delete a short link by its ID for the authenticated user
+      parameters:
+      - description: Link ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Link deleted successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid ID format
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Link not found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete a short link
+      tags:
+      - Links
+  /api/login:
+    post:
+      consumes:
+      - application/json
+      description: Login to get a JWT token
+      parameters:
+      - description: Login request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Register'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success Login
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request or Wrong Email/Password
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Login user
+      tags:
+      - Auth
+  /api/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with email and password
+      parameters:
+      - description: Register request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Register'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success register
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request or Email already exists
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed register
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Register a new user
+      tags:
+      - Auth
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and your JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
