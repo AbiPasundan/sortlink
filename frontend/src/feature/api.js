@@ -33,7 +33,14 @@ export const api = createApi({
             query: () => "/api/links",
             transformResponse: response => response.Results,
         }),
+        createSortLink: builder.mutation({
+            query: (body) => ({
+                url: "/api/links",
+                method: "POST",
+                body,
+            }),
+        }),
     }),
 });
 
-export const { useLoginMutation, useRegisterMutation, useGetLinksQuery } = api;
+export const { useLoginMutation, useRegisterMutation, useGetLinksQuery, useCreateSortLinkMutation } = api;

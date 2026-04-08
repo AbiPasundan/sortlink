@@ -9,6 +9,7 @@ import { store } from '#/app/store.js'
 import { Provider } from 'react-redux';
 import Dashboard from '#/pages/Dashboard';
 import NotFound from '#/pages/NotFound';
+import SortLink from '#/pages/SortLink';
 
 let router = createBrowserRouter([
   {
@@ -26,6 +27,10 @@ let router = createBrowserRouter([
   {
     path: "/dashboard",
     Component: Dashboard,
+  },
+  {
+    path: "/createlink",
+    Component: SortLink,
   },
   {
     path: "*",
