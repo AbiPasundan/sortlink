@@ -35,15 +35,18 @@ export default function Login() {
                 email: data.email,
                 password: data.password,
             }).unwrap();
-            const token = res.data || res.Results;
+            console.log(res);
 
-            localStorage.setItem("token", token);
-            setTimeout(() => {
-                navigate("/", { replace: true });
-            }, 1000);
+            const token = res.Results.token;
+            console.log(token);
+
+            localStorage.setItem("token", JSON.stringify(token));
+
+            navigate("/", { replace: true });
+
         } catch (err) {
             console.error(err);
-            setError(err?.data?.message || "Email or Password Wrong");
+            setError(err?.data?.message || "Email atau Password Salah");
         }
     };
 

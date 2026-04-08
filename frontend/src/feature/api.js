@@ -29,7 +29,11 @@ export const api = createApi({
                 body,
             }),
         }),
+        getLinks: builder.query({
+            query: () => "/api/links",
+            transformResponse: response => response.Results,
+        }),
     }),
 });
 
-export const { useLoginMutation, useRegisterMutation} = api;
+export const { useLoginMutation, useRegisterMutation, useGetLinksQuery } = api;
