@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	_ "linksort/internal/dto"
 	"linksort/internal/helper"
 	"linksort/internal/models"
 	"linksort/internal/service"
@@ -21,6 +22,17 @@ func NewLinksHandler(service *service.LinksService) *LinksHandler {
 	}
 }
 
+// GetAllShortLinks godoc
+// @Summary Get all short links
+// @Description Get all short links for the authenticated user
+// @Tags Links
+// @Security BearerAuth
+// @Produce json
+// @Param id header int true "Authenticated User ID"
+// @Success 200 {array} dto.Links "Links fetched successfully"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /api/links [get]
 func (h *LinksHandler) GetLinkHandler(ctx *gin.Context) {
 	id, exists := ctx.Get("id")
 
