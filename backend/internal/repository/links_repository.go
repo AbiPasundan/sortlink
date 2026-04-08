@@ -51,3 +51,16 @@ func (p *LinksRepository) DeleteLink(userId int, id int) error {
 
 	return err
 }
+
+func (r *LinksRepository) RedirecLink(ctx context.Context, slug string) (string, error) {
+	var originalURL string
+
+	query := `SELECT original_url FROM links WHERE slug = $1 AND deleted_at IS NULL LIMIT 1;`
+
+	err := r.db.QueryRow(ctx, query, slug).Scan(&originalURL)
+	if err != nil {
+		return "", err
+	}
+
+	return originalURL, nil
+}

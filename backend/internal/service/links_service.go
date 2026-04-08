@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"linksort/internal/models"
 	"linksort/internal/repository"
 )
@@ -25,4 +26,13 @@ func (s *LinksService) GetLinkService(id int) ([]models.GetLinks, error) {
 
 func (s *LinksService) DeleteLinkService(userId int, id int) error {
 	return s.LinkRepo.DeleteLink(userId, id)
+}
+
+func (s *LinksService) ResolveURL(ctx context.Context, slug string) (string, error) {
+	url, err := s.LinkRepo.RedirecLink(ctx, slug)
+	if err != nil {
+		return "", err
+	}
+
+	return url, nil
 }
