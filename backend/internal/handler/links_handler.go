@@ -80,6 +80,18 @@ func (h *LinksHandler) CreateLink(ctx *gin.Context) {
 	helper.ResponseOk(ctx, http.StatusOK, "Berhasil membuat link", nil)
 }
 
+// DeleteLink godoc
+// @Summary Delete a short link
+// @Description Delete a short link by its ID for the authenticated user
+// @Tags Links
+// @Security BearerAuth
+// @Produce json
+// @Param id path int true "Link ID"
+// @Success 200 {object} map[string]interface{} "Link deleted successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid ID format"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 404 {object} map[string]interface{} "Link not found"
+// @Router /api/links/{id} [patch]
 func (h *LinksHandler) DeleteLink(ctx *gin.Context) {
 
 	idParamsRaw := ctx.Param("id")
