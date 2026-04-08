@@ -30,6 +30,15 @@ const docTemplate = `{
                     "Links"
                 ],
                 "summary": "Get all short links",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Authenticated User ID",
+                        "name": "id",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Links fetched successfully",
@@ -290,9 +299,6 @@ const docTemplate = `{
                 "original_url"
             ],
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
                 "original_url": {
                     "type": "string"
                 },
