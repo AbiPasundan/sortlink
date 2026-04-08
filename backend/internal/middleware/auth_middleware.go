@@ -65,7 +65,7 @@ func JWTMiddleware() gin.HandlerFunc {
 
 func GenerateToken(userID int, email string, created_at time.Time) (string, error) {
 
-	expiration := time.Now().Add(time.Hour * 24)
+	expiration := time.Now().Add(time.Minute * 24)
 
 	claims := &Claims{
 		UserID: userID,
