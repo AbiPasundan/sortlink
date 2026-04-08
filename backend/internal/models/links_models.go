@@ -10,6 +10,7 @@ type CreateLinks struct {
 }
 
 type GetLinks struct {
+	SlugID      int       `json:"id" db:"slug_id"`
 	UserID      int       `json:"user_id" db:"id"`
 	OriginalURL string    `json:"original_url" db:"original_url" binding:"required,url"`
 	Slug        string    `json:"slug" db:"slug"`
