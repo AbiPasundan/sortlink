@@ -1,6 +1,11 @@
+import { jwtDecode } from "jwt-decode";
 import { FiLogOut, FiEdit2, FiLink, FiBell, FiShield } from 'react-icons/fi';
 
 export default function ProfileMain() {
+    const token = localStorage.getItem("token")
+    const decodedToken = token ? jwtDecode(token) : null;
+    console.log(decodedToken);
+    console.log(decodedToken.user_id);
     return (
         <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] p-8">
 
@@ -14,14 +19,14 @@ export default function ProfileMain() {
             <div className="flex items-center space-x-5 mb-8">
                 <div className="relative">
                     <div className="w-20 h-20 bg-slate-900 rounded-2xl overflow-hidden flex items-end justify-center">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex&backgroundColor=1e293b" alt="Alex Thompson" className="w-full h-full" />
+                        <img src="https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSV7_7WrG-Cdp_tRevCNWCE5Rx3Y5iSZ-aTow2hBd2A7010u2TGrbrjtcrLQkn_qPdOF8QU5FQzcr_LnUihpx6M96Kwkj__lbU3gFGIaE4PoTV918TtekzeRXv7bZ1etil-h83nlx55ug&s=19" className="w-full h-full" />
                     </div>
                     <button className="absolute -bottom-2 -right-2 bg-white p-1.5 rounded-full border border-gray-100 shadow-sm text-gray-600 hover:text-blue-600 transition-colors">
                         <FiEdit2 className="w-3.5 h-3.5" />
                     </button>
                 </div>
                 <div>
-                    <h3 className="text-lg font-bold text-gray-900">Alex Thompson</h3>
+                    <h3 className="text-lg font-bold text-gray-900">john doe</h3>
                     <p className="text-sm text-gray-500 font-medium">Product Architect at Digital Flow</p>
                 </div>
             </div>
@@ -29,7 +34,7 @@ export default function ProfileMain() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                 <div className="bg-gray-50 rounded-xl p-4">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Email Address</p>
-                    <p className="text-sm font-semibold text-gray-800">user@example.com</p>
+                    <p className="text-sm font-semibold text-gray-800">{decodedToken.email}</p>
                 </div>
                 <div className="bg-gray-50 rounded-xl p-4">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Account Tenure</p>
