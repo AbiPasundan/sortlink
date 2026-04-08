@@ -50,6 +50,18 @@ func (h *LinksHandler) GetLinkHandler(ctx *gin.Context) {
 	helper.ResponseOk(ctx, http.StatusOK, "Success get All Links ", links)
 }
 
+// CreateLink godoc
+// @Summary Create a new short link
+// @Description Create a new short link for the authenticated user
+// @Tags Links
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param request body models.CreateLinks true "Create link request body"
+// @Success 200 {object} map[string]interface{} "Link created successfully"
+// @Failure 400 {object} map[string]interface{} "Validation failed"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /api/links [post]
 func (h *LinksHandler) CreateLink(ctx *gin.Context) {
 	var newLink models.CreateLinks
 
