@@ -14,6 +14,13 @@ export const api = createApi({
             return headers;
         },
     }),
+    prepareHeaders: (headers) => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            headers.set('authorization', `Bearer ${token}`);
+        }
+        return headers;
+    },
     endpoints: (builder) => ({
         register: builder.mutation({
             query: (body) => ({
@@ -40,7 +47,14 @@ export const api = createApi({
                 body,
             }),
         }),
+        deleteLink: builder.mutation({
+            query: (id) => ({
+                url: `/api/links/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["Link"],
+        }),
     }),
 });
 
-export const { useLoginMutation, useRegisterMutation, useGetLinksQuery, useCreateSortLinkMutation } = api;
+export const { useLoginMutation, useRegisterMutation, useGetLinksQuery, useCreateSortLinkMutation, useDeleteLinkMutation } = api;

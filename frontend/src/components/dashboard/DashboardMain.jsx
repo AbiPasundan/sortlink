@@ -7,10 +7,17 @@ import { FiFilter } from "react-icons/fi";
 import { useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { useGetLinksQuery } from "#/feature/api";
+import { useDeleteLinkMutation } from "#/feature/api";
+import { jwtDecode } from "jwt-decode";
 
 function DashboardMain() {
     const { data, isLoading, error } = useGetLinksQuery();
     const datas = data || [];
+    const [deleteLink] = useDeleteLinkMutation()
+
+    const token = localStorage.getItem("token")
+    const decodedToken = token ? jwtDecode(token) : null;
+    console.log(decodedToken.user_id);
 
     const [search, setSearch] = useState("");
     const [copied, setCopied] = useState(null);
@@ -25,6 +32,16 @@ function DashboardMain() {
         navigator.clipboard.writeText(text).catch(() => { });
         setCopied(id);
         setTimeout(() => setCopied(null), 1500);
+    };
+
+    const handleDelete = async (id) => {
+        try {
+            await deleteLink(id).unwrap();
+            alert("Berhasil menghapus link");
+        } catch (error) {
+            console.error("Gagal menghapus:", error);
+            alert("Gagal menghapus link");
+        }
     };
 
     if (isLoading) return <div className="text-center py-10">Loading</div>;
@@ -78,10 +95,10 @@ function DashboardMain() {
                         </div>
 
                         <div className="flex items-center gap-1 ml-4 shrink-0">
-                            <button onClick={() => handleCopy(link.id, link.slug)} className={`p-2 rounded-lg border transition-all duration-150 ${copied === link.id ? "border-green-300 bg-green-50 text-green-500" : "border-gray-100 bg-gray-50 text-gray-400 hover:border-blue-200 hover:text-blue-500 hover:bg-blue-50" }`} title="Copy link" >
+                            <button onClick={() => handleCopy(link.id, link.slug)} className={`p-2 rounded-lg border transition-all duration-150 ${copied === link.id ? "border-green-300 bg-green-50 text-green-500" : "border-gray-100 bg-gray-50 text-gray-400 hover:border-blue-200 hover:text-blue-500 hover:bg-blue-50"}`} title="Copy link" >
                                 <FiCopy className="text-sm" />
                             </button>
-                            <button className="p-2 rounded-lg border border-gray-100 bg-gray-50 text-gray-400 hover:border-red-200 hover:text-red-400 hover:bg-red-50 transition-all duration-150" title="Delete link" >
+                            <button onClick={() => handleDelete(link.id)} className="p-2 rounded-lg border border-gray-100 bg-gray-50 text-gray-400 hover:border-red-200 hover:text-red-400 hover:bg-red-50 transition-all duration-150" title="Delete link" >
                                 <FiTrash2 className="text-sm" />
                             </button>
                         </div>
