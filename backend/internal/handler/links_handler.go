@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 	_ "linksort/internal/dto"
 	"linksort/internal/helper"
@@ -112,4 +114,21 @@ func (h *LinksHandler) DeleteLink(ctx *gin.Context) {
 	helper.ResponseErr(ctx, http.StatusNotFound, "id not found", nil, err)
 
 	helper.ResponseOk(ctx, http.StatusOK, fmt.Sprintf("Success delete category with id: %d", idParams), nil)
+}
+
+func (h *LinksHandler) Redirect(ctx *gin.Context) {
+	slug := ctx.Param("slug")
+
+	url, err := h.LinkService.ResolveURL(ctx.Request.Context(), slug)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			helper.ResponseErr(ctx, http.StatusNotFound, "URL not found", nil, err)
+			return
+		}
+
+		helper.ResponseErr(ctx, http.StatusInternalServerError, "Internal server error "+err.Error(), nil, err)
+		return
+	}
+
+	ctx.Redirect(http.StatusFound, url)
 }

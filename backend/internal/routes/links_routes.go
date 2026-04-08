@@ -8,6 +8,7 @@ import (
 )
 
 func LinksRoutes(r *gin.Engine, h *handler.LinksHandler) {
+	r.GET("/:slug", h.Redirect)
 	admin := r.Group("/api")
 	admin.Use(middleware.JWTMiddleware())
 	admin.POST("/links", h.CreateLink)
