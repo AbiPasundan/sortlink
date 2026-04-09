@@ -43,7 +43,7 @@ func CORSMiddleware() gin.HandlerFunc {
 		if slices.Contains(allowOrigins, origin) {
 			ctx.Header("Access-Control-Allow-Origin", origin)
 		}
-
+		ctx.Header("Access-Control-Allow-Credentials", "true")
 		ctx.Header("Access-Control-Allow-Headers", strings.Join(allowHeaders, ", "))
 		ctx.Header("Access-Control-Allow-Methods", strings.Join(allowMethods, ", "))
 

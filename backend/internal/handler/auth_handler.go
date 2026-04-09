@@ -75,28 +75,41 @@ func (h *AuthHandler) Login(ctx *gin.Context) {
 	var req models.Register
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
-		helper.ResponseErr(ctx, http.StatusBadRequest, "Invalid request ", nil, err)
+		helper.ResponseErr(ctx, http.StatusBadRequest, "Invalid request", nil, err)
 		return
 	}
 
 	user, err := h.AuthService.Login(req.Email, req.Password)
-
 	if err != nil {
-		helper.ResponseErr(ctx, http.StatusBadRequest, "Wrong Email or Password ", nil, err)
+		helper.ResponseErr(ctx, http.StatusBadRequest, "Wrong Email or Password", nil, err)
 		return
 	}
 
 	token, err := middleware.GenerateToken(user.Id, user.Email, user.Createdat)
+	if err != nil {
+		helper.ResponseErr(ctx, http.StatusInternalServerError, "Failed generate token", nil, err)
+		return
+	}
+
+	ctx.SetSameSite(http.SameSiteLaxMode)
+
+	ctx.SetCookie(
+		"token",
+		token,
+		3600,
+		"/",
+		"",
+		false,
+		true,
+	)
 
 	result := gin.H{
-		"token": token,
-		"user": ResponseUser{
-			Id:         user.Id,
-			Email:      user.Email,
-			Created_at: user.Createdat,
+		"user": gin.H{
+			"id":         user.Id,
+			"email":      user.Email,
+			"created_at": user.Createdat,
 		},
 	}
 
-	helper.ResponseOk(ctx, http.StatusOK, "Success Login ", result)
-
+	helper.ResponseOk(ctx, http.StatusOK, "Success Login", result)
 }
