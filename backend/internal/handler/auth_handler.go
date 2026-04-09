@@ -93,23 +93,37 @@ func (h *AuthHandler) Login(ctx *gin.Context) {
 
 	ctx.SetSameSite(http.SameSiteLaxMode)
 
-	ctx.SetCookie(
-		"token",
-		token,
-		3600,
-		"/",
-		"",
-		false,
-		true,
-	)
+	ctx.SetCookie("token", token, 3600, "/", "", false, true)
 
 	result := gin.H{
-		"user": gin.H{
-			"id":         user.Id,
-			"email":      user.Email,
-			"created_at": user.Createdat,
+		"token": token,
+		"user": ResponseUser{
+			Id:         user.Id,
+			Email:      user.Email,
+			Created_at: user.Createdat,
 		},
 	}
 
 	helper.ResponseOk(ctx, http.StatusOK, "Success Login", result)
+}
+
+func (h *AuthHandler) Me(ctx *gin.Context) {
+	tokenString, err := ctx.Cookie("token")
+	if err != nil {
+		ctx.JSON(401, gin.H{"message": "Unauthorized"})
+		return
+	}
+
+	claims, err := middleware.ParseToken(tokenString)
+	if err != nil {
+		ctx.JSON(401, gin.H{"message": "Invalid token"})
+		return
+	}
+
+	ctx.JSON(200, gin.H{
+		"user": gin.H{
+			"id":    claims.UserID,
+			"email": claims.Email,
+		},
+	})
 }
