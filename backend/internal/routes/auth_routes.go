@@ -11,4 +11,5 @@ func AuthRoutes(r *gin.Engine, h *handler.AuthHandler) {
 	routes.POST("/register", h.Register)
 	routes.POST("/login", h.Login)
 	routes.GET("/me", h.Me)
+	routes.POST("/logout", h.Logout)
 }

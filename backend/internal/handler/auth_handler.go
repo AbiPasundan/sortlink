@@ -120,10 +120,19 @@ func (h *AuthHandler) Me(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(200, gin.H{
+	result := gin.H{
+		"token": claims,
 		"user": gin.H{
 			"id":    claims.UserID,
 			"email": claims.Email,
 		},
-	})
+	}
+
+	helper.ResponseOk(ctx, http.StatusOK, "Success get me", result)
+}
+
+func (h *AuthHandler) Logout(ctx *gin.Context) {
+	ctx.SetCookie("token", "", -1, "/", "", false, true)
+
+	helper.ResponseOk(ctx, http.StatusOK, "Success logout", nil)
 }
