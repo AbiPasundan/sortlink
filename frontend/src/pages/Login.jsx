@@ -35,17 +35,10 @@ export default function Login() {
                 email: data.email,
                 password: data.password,
             }).unwrap();
-            console.log(res);
-
-            const token = res.Results.token;
-            console.log(token);
-
-            localStorage.setItem("token", JSON.stringify(token));
 
             navigate("/", { replace: true });
 
         } catch (err) {
-            console.error(err);
             setError(err?.data?.message || "Email atau Password Salah");
         }
     };

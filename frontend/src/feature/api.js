@@ -3,16 +3,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const api = createApi({
     reducerPath: "api",
     baseQuery: fetchBaseQuery({
-        baseUrl: "http://68.183.226.223:20609/" || "http://68.183.226.223:20609/",
-        prepareHeaders: (headers) => {
-            const token = localStorage.getItem("token");
-
-            if (token) {
-                headers.set("Authorization", `Bearer ${token}`);
-            }
-
-            return headers;
-        },
+        baseUrl: "http://localhost:8888/",
+        credentials: "include",
     }),
     prepareHeaders: (headers) => {
         const token = localStorage.getItem("token");
@@ -54,7 +46,10 @@ export const api = createApi({
             }),
             invalidatesTags: ["Link"],
         }),
+        me: builder.query({
+            query: () => "/api/me",
+        }),
     }),
 });
 
-export const { useLoginMutation, useRegisterMutation, useGetLinksQuery, useCreateSortLinkMutation, useDeleteLinkMutation } = api;
+export const { useLoginMutation, useRegisterMutation, useGetLinksQuery, useCreateSortLinkMutation, useDeleteLinkMutation, useMeQuery } = api;

@@ -1,11 +1,14 @@
-import { jwtDecode } from "jwt-decode";
 import { FiLogOut, FiEdit2, FiLink, FiBell, FiShield } from 'react-icons/fi';
+import { useMeQuery } from '#/feature/api';
 
 export default function ProfileMain() {
-    const token = localStorage.getItem("token")
-    const decodedToken = token ? jwtDecode(token) : null;
-    console.log(decodedToken);
-    console.log(decodedToken.user_id);
+    const { data, isLoading, error } = useMeQuery();
+    const datas = data || {};
+    const user = datas.user || {};
+    console.log(datas.user);
+
+    if (isLoading) return <p>Loading...</p>;
+    if (error) return <p>Unauthorized</p>;
     return (
         <div className="bg-white rounded-2xl shadow-[0_2px_10px_-4px_rgba(0,0,0,0.1)] p-8">
 
@@ -34,7 +37,7 @@ export default function ProfileMain() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                 <div className="bg-gray-50 rounded-xl p-4">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Email Address</p>
-                    <p className="text-sm font-semibold text-gray-800">{decodedToken.email}</p>
+                    <p className="text-sm font-semibold text-gray-800">{user.email}</p>
                 </div>
                 <div className="bg-gray-50 rounded-xl p-4">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Account Tenure</p>
