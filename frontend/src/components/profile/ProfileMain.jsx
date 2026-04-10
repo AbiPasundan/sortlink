@@ -1,11 +1,19 @@
 import { FiLogOut, FiEdit2, FiLink, FiBell, FiShield } from 'react-icons/fi';
-import { useMeQuery } from '#/feature/api';
+import { useMeQuery, useLogoutMutation } from '#/feature/api';
+import { useNavigate } from "react-router";
 
 export default function ProfileMain() {
-    const { data, isLoading, error } = useMeQuery();
+    const { data, isLoading, error, refetch } = useMeQuery();
+    const [logout] = useLogoutMutation()
     const datas = data || {};
+    const navigate = useNavigate();
+
     const user = datas.user || {};
-    console.log(datas.user);
+    const handleLogout = async () => {
+        await logout();
+        refetch();
+        navigate("/login");
+    };
 
     if (isLoading) return <p>Loading...</p>;
     if (error) return <p>Unauthorized</p>;
@@ -79,7 +87,7 @@ export default function ProfileMain() {
                 </div>
             </div>
 
-            <button className="w-full flex items-center justify-center space-x-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-600 font-semibold py-3 rounded-xl transition-colors text-sm">
+            <button onClick={() => handleLogout()} className="w-full flex items-center justify-center space-x-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-600 font-semibold py-3 rounded-xl transition-colors text-sm">
                 <FiLogOut className="w-4 h-4" />
                 <span>Logout Session</span>
             </button>

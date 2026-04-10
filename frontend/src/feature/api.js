@@ -49,7 +49,13 @@ export const api = createApi({
         me: builder.query({
             query: () => "/api/me",
         }),
+        logout: builder.mutation({
+            query: () => ({
+                url: "/api/logout",
+                method: "POST",
+            }),
+        }),
     }),
 });
 
-export const { useLoginMutation, useRegisterMutation, useGetLinksQuery, useCreateSortLinkMutation, useDeleteLinkMutation, useMeQuery } = api;
+export const { useLoginMutation, useRegisterMutation, useGetLinksQuery, useCreateSortLinkMutation, useDeleteLinkMutation, useMeQuery, useLogoutMutation } = api;
