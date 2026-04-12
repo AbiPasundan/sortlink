@@ -4,11 +4,12 @@ import { useNavigate } from "react-router";
 
 export default function ProfileMain() {
     const { data, isLoading, error, refetch } = useMeQuery();
+    console.log(data);
+
     const [logout] = useLogoutMutation()
-    const datas = data || {};
+    const { Results: { user } = {} } = data || {};
     const navigate = useNavigate();
 
-    const user = datas.user || {};
     const handleLogout = async () => {
         await logout();
         refetch();
@@ -45,7 +46,7 @@ export default function ProfileMain() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                 <div className="bg-gray-50 rounded-xl p-4">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Email Address</p>
-                    <p className="text-sm font-semibold text-gray-800">{user.email}</p>
+                    <p className="text-sm font-semibold text-gray-800">{user?.email}</p>
                 </div>
                 <div className="bg-gray-50 rounded-xl p-4">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Account Tenure</p>
