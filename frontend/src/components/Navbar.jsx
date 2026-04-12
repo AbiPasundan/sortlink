@@ -33,7 +33,7 @@ export default function Navbar() {
                         <Link to="/analytics" className="hover:text-slate-800 transition-colors">
                             Analytics
                         </Link>
-                        <Link to="/links" className="hover:text-slate-800 transition-colors">
+                        <Link to="/dashboard" className="hover:text-slate-800 transition-colors">
                             Links
                         </Link>
                     </div>
@@ -44,11 +44,15 @@ export default function Navbar() {
                         <span className="text-sm text-slate-400">Loading...</span>
                     ) : isLoggedIn ? (
                         <>
-                            <Link to="/dashboard" className="text-sm font-medium text-slate-600 hover:text-slate-900 px-3 py-1.5 transition-colors" >
-                                Dashboard
+                            <Link to="/createlink" className="text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-md transition-colors" >
+                                + Create New Link
                             </Link>
 
-                            <button onClick={handleLogout} className="text-sm font-semibold bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-md transition-colors" >
+                            <Link to="/profile" className="w-9 h-9 rounded-full overflow-hidden bg-slate-200 flex items-center justify-center text-sm font-semibold text-slate-600">
+                                <img src="https://i.pravatar.cc/" alt="profile" className="w-full h-full object-cover" />
+                            </Link>
+
+                            <button onClick={handleLogout} className="text-sm font-medium text-slate-600 hover:text-slate-900 px-3 py-1.5 transition-colors" >
                                 Logout
                             </button>
                         </>
