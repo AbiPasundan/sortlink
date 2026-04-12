@@ -8,19 +8,14 @@ import { useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { useGetLinksQuery } from "#/feature/api";
 import { useDeleteLinkMutation } from "#/feature/api";
-import { jwtDecode } from "jwt-decode";
 
 function DashboardMain() {
-    const { data, isLoading, error } = useGetLinksQuery();
-    const datas = data || [];
-    const [deleteLink] = useDeleteLinkMutation()
-
-    const token = localStorage.getItem("token")
-    const decodedToken = token ? jwtDecode(token) : null;
-    console.log(decodedToken.user_id);
-
     const [search, setSearch] = useState("");
     const [copied, setCopied] = useState(null);
+
+    const { data, isLoading, error } = useGetLinksQuery();
+    const [deleteLink] = useDeleteLinkMutation()
+    const datas = data || [];
 
     const filtered = datas.filter(
         (l) =>

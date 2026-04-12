@@ -3,7 +3,6 @@ import { useGetLinksQuery } from "../../feature/api";
 function DashboardHeader() {
     const { data, isLoading, error } = useGetLinksQuery();
     const datas = data || [];
-    console.log(datas.length);
     if (isLoading) return <div className="text-center py-10">Loading</div>;
     if (error) return <div className="text-center py-10 text-red-500">Error</div>;
     return (
