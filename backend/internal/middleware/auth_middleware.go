@@ -24,22 +24,29 @@ func JWTMiddleware() gin.HandlerFunc {
 	if secretKey == nil {
 		secretKey = []byte("SECRET_KEY")
 	}
-	return func(c *gin.Context) {
+	return func(ctx *gin.Context) {
 
-		auth := c.GetHeader("Authorization")
+		var tokenStr string
 
-		if auth == "" {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "missing token"})
-			return
+		cookieToken, err := ctx.Cookie("token")
+		if err == nil && cookieToken != "" {
+			tokenStr = cookieToken
+		} else {
+			auth := ctx.GetHeader("Authorization")
+
+			if auth == "" {
+				ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "missing token"})
+				return
+			}
+
+			parts := strings.Split(auth, " ")
+			if len(parts) != 2 || parts[0] != "Bearer" {
+				ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token format"})
+				return
+			}
+
+			tokenStr = strings.Trim(parts[1], "\"' ")
 		}
-
-		parts := strings.Split(auth, " ")
-		if len(parts) != 2 || parts[0] != "Bearer" {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token format"})
-			return
-		}
-
-		tokenStr := strings.Trim(parts[1], "\"' ")
 
 		claims := &Claims{}
 
@@ -49,18 +56,18 @@ func JWTMiddleware() gin.HandlerFunc {
 			})
 
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token", "details": err.Error()})
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token", "details": err.Error()})
 			return
 		}
 
 		if !token.Valid {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "token is not valid"})
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "token is not valid"})
 			return
 		}
 
-		c.Set("id", claims.UserID)
+		ctx.Set("id", claims.UserID)
 
-		c.Next()
+		ctx.Next()
 	}
 }
 
