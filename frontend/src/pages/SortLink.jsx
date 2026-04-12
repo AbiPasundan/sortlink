@@ -1,11 +1,10 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Link } from "react-router";
-import { jwtDecode } from "jwt-decode";
 import * as yup from 'yup';
 import { FaLink, FaArrowLeft, FaRegEye, FaChartLine, FaQrcode } from 'react-icons/fa';
 import { IoMdFlash } from 'react-icons/io';
-import { useCreateSortLinkMutation } from '#/feature/api';
+import { useCreateSortLinkMutation, useMeQuery } from '#/feature/api';
 import Navbar from '#/components/Navbar';
 import Footer from '#/components/Footer';
 
@@ -33,30 +32,15 @@ function CardSortLink({ icon, title, desc }) {
 
 export default function SortLink() {
     const [createSortLink, { isLoading }] = useCreateSortLinkMutation();
+    const { data, error } = useMeQuery(); // use this for user id
+    const { Results: { user } = {} } = data || {};
 
-    const {
-        register,
-        handleSubmit,
-        watch,
-        reset,
-        formState: { errors },
-    } = useForm({
-        resolver: yupResolver(schema),
-        defaultValues: {
-            OriginalURL: '',
-            customSlug: '',
-        },
-    });
-
-    const token = localStorage.getItem("token")
-    const decodedToken = token ? jwtDecode(token) : null;
-    console.log(decodedToken.user_id);
-
+    const { register, handleSubmit, watch, reset, formState: { errors }, } = useForm({ resolver: yupResolver(schema), defaultValues: { OriginalURL: '', customSlug: '', }, });
 
     const onSubmit = async (data) => {
         try {
             const payload = {
-                user_id: decodedToken.user_id,
+                user_id: user.id,
                 original_url: data.OriginalURL,
                 slug: data.customSlug
             };
